@@ -64,7 +64,39 @@ function bombGenerator(level){
 
             bombs--;
         }
-        console.log(template)
+    }
+    
+    //runs function that generates the nearby number of bombs
+    template = numberGenerator(template);
+    
+    return template;
+}
+
+function numberGenerator(template){
+    //loop through template
+    for(let i = 0; i < template.length; i++){
+        for(let j = 0; j < template[i].length; j++){
+            if(template[i][j] === ""){
+                let countNearBombs = 0;
+
+                //loops through the immediate surrounding cells
+                for(let x = i - 1; x <= i + 1; x++){
+                    for(let y = j - 1; y <= j + 1; y++){
+                        //checks for all surrounding cells except itself as well as check for grid out of bounds
+                        if(!(x === i && y === i) && x >= 0 && y >= 0 && x < template.length && y < template.length){
+                            //checks for bomb
+                            if(template[x][y] === 9){
+                                countNearBombs++;
+                            }
+                        }
+                    }
+                }
+                
+                if(countNearBombs > 0){
+                    template[i][j] = countNearBombs;
+                }
+            }
+        }
     }
 
     return template;
