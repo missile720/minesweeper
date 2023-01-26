@@ -149,6 +149,7 @@ function numberGenerator(template){
 
 function buttonEvent(){
     document.getElementById("level").addEventListener("change", levelChange);
+    document.getElementById("bottom").addEventListener("click", reset);
 
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
@@ -261,6 +262,7 @@ function reset(){
     document.getElementById("time").innerHTML = '000';
     document.getElementById("minesweeperBoard").innerHTML = "";
     document.getElementById("minesweeperBoard").classList.remove("expert");
+    document.getElementById("bottom").classList.add("hidden");
 
     document.getElementById("level").removeEventListener("change", levelChange);
 
@@ -292,5 +294,12 @@ function gameOver(){
             cell.classList.add("revealed");
             cell.firstChild.classList.remove("hidden");
         }
-    })
+        else{
+            cell.style.background = "yellow";
+            cell.classList.add("revealed");
+            cell.firstChild.classList.remove("hidden");
+        }
+    });
+
+    document.getElementById("bottom").classList.remove("hidden");
 }
