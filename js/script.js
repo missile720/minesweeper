@@ -1,5 +1,7 @@
 let board = [];
 let level = "easy";
+let count = 0;
+let cellTotal = 0;
 let seconds = 0;
 let myInterval;
 let initialClick = false;
@@ -58,6 +60,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(9).fill("").map(() => new Array(9).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -78,6 +83,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(16).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -98,6 +106,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(30).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -111,7 +122,7 @@ function bombGenerator(level){
             bombs--;
         }
     }
-    
+
     //runs function that generates the nearby number of bombs
     template = numberGenerator(template);
     
@@ -207,11 +218,6 @@ function cellClick(cell){
     cell.classList.add("revealed");
     cell.firstChild.classList.remove("hidden");
     
-    if(cell.firstChild.getAttribute('value') === '9'){
-        gameOver();
-    }
-
-
     if(cell.firstChild.innerHTML === ""){
         let currentCol = cell.getAttribute('col');
         let currentRow = cell.getAttribute('row');
@@ -235,6 +241,13 @@ function cellClick(cell){
                 }
             }
         });
+    }
+
+    if(cell.firstChild.getAttribute('value') === '9'){
+        gameOver();
+    }
+    else{
+        winCondition();
     }
 }
 
@@ -302,4 +315,23 @@ function gameOver(){
     });
 
     document.getElementById("bottom").classList.remove("hidden");
+}
+
+function winCondition(){
+    let cells = document.querySelectorAll(".cell");
+    count = 0;
+
+    cells.forEach(cell => {
+        if(cell.classList.contains("revealed")){
+            count++
+        }
+    });
+
+    if(count === cellTotal){
+        winScreen();
+    }
+}
+
+function winScreen(){
+    
 }
