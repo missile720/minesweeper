@@ -19,6 +19,13 @@ body, .container{
 .title{
     font-size: min(13vw, 80px);
 }
+
+.info{
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+}
+
 .main{
     position: fixed;
     top: 50%;
