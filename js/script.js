@@ -4,6 +4,8 @@ let level = "easy";
 //calls function boardGenerator based on level
 boardGenerator(level);
 
+buttonEvent();
+
 //executes board generation
 function boardGenerator(level){
     board = bombGenerator(level);
@@ -15,7 +17,7 @@ function boardGenerator(level){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
             //loops through columns
             for(let j = 0; j < 9; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button row = "${i}" col = "${j}">${board[i][j]}</button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class = "hidden">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -23,7 +25,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button row = "${i}" col = "${j}"></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}">${board[i][j]}</button>`;
             }
         }
     }
@@ -35,7 +37,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button row = "${i}" col = "${j}"></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}">${board[i][j]}</button>`;
             }
         }
     }
@@ -65,6 +67,44 @@ function bombGenerator(level){
             bombs--;
         }
     }
+    else if(level === 'medium'){
+        //initial number of bombs
+        bombs = 40;
+
+        //create template board
+        template = new Array(16).fill("").map(() => new Array(16).fill(""));
+        
+        //runs while bombs still need to be placed
+        while(bombs){
+            //randomizes the row and col for the bomb
+            let row = Math.floor(Math.random()*(16));
+            let col = Math.floor(Math.random()*(16));
+            
+            //sets bomb
+            template[row][col] = 9;
+
+            bombs--;
+        }
+    }
+    else if(level === 'expert'){
+        //initial number of bombs
+        bombs = 99;
+
+        //create template board
+        template = new Array(16).fill("").map(() => new Array(30).fill(""));
+        
+        //runs while bombs still need to be placed
+        while(bombs){
+            //randomizes the row and col for the bomb
+            let row = Math.floor(Math.random()*(16));
+            let col = Math.floor(Math.random()*(30));
+            
+            //sets bomb
+            template[row][col] = 9;
+
+            bombs--;
+        }
+    }
     
     //runs function that generates the nearby number of bombs
     template = numberGenerator(template);
@@ -83,7 +123,7 @@ function numberGenerator(template){
                 for(let x = i - 1; x <= i + 1; x++){
                     for(let y = j - 1; y <= j + 1; y++){
                         //checks for all surrounding cells except itself as well as check for grid out of bounds
-                        if(!(x === i && y === i) && x >= 0 && y >= 0 && x < template.length && y < template.length){
+                        if(!(x === i && y === i) && x >= 0 && y >= 0 && x < template.length && y < template[0].length){
                             //checks for bomb
                             if(template[x][y] === 9){
                                 countNearBombs++;
@@ -101,3 +141,14 @@ function numberGenerator(template){
 
     return template;
 }
+
+function buttonEvent(){
+    //select all cells in grid
+    let cells = document.querySelectorAll(".cell");
+
+    //loops through cells and adds event listeners for mouseclick
+    cells.forEach(cell => {
+        cell.addEventListener("click", function() {cellClick(cell)});
+    });
+}
+
