@@ -17,6 +17,18 @@
         <div class="header">
             <h1 class="title">Minesweeper</h1>
         </div>
+        <div class="info">
+            <h2>
+            <label for="level">Level:</label>
+            <select name="level" id="level">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="expert">Expert</option>
+            </select>
+            </h2>
+            <h2>Flags: <span id="flags"></span></h2>
+            <h2>Timer: <span id="time">000</span></h2>
+        </div>
         <div class="main">
             <!-- This is where the board is loaded onto -->
             <div class = "box" id="minesweeperBoard">

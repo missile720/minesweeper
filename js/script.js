@@ -1,5 +1,8 @@
 let board = [];
 let level = "easy";
+let seconds = 0;
+let myInterval;
+let initialClick = false;
 
 //calls function boardGenerator based on level
 boardGenerator(level);
@@ -25,7 +28,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}">${board[i][j]}</button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -37,7 +40,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}">${board[i][j]}</button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -51,7 +54,8 @@ function bombGenerator(level){
     if(level === 'easy'){
         //initial number of bombs
         bombs = 10;
-
+        //adds flags based on number of initial bombs
+        document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(9).fill("").map(() => new Array(9).fill(""));
         
@@ -70,7 +74,8 @@ function bombGenerator(level){
     else if(level === 'medium'){
         //initial number of bombs
         bombs = 40;
-
+        //adds flags based on number of initial bombs
+        document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(16).fill(""));
         
@@ -89,7 +94,8 @@ function bombGenerator(level){
     else if(level === 'expert'){
         //initial number of bombs
         bombs = 99;
-
+        //adds flags based on number of initial bombs
+        document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(30).fill(""));
         
@@ -142,6 +148,8 @@ function numberGenerator(template){
 }
 
 function buttonEvent(){
+    document.getElementById("level").addEventListener("change", levelChange);
+
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
 
@@ -151,8 +159,20 @@ function buttonEvent(){
     });
 }
 
+function levelChange(event){
+    level = event.target.value;
+    
+    reset();
+}
+
 //function executes when cell is clicked
 function cellClick(cell){
+    if(!initialClick){
+        myInterval = setInterval(myTimer, 1000);
+        initialClick = true;
+    }
+
+
     //reveals clicked cell
     cell.style.background = "yellow";
     cell.classList.add("revealed");
@@ -182,4 +202,44 @@ function cellClick(cell){
             }
         });
     }
+}
+
+function myTimer(){
+    if(seconds < 10){
+        document.getElementById("time").innerHTML = "0" + "0" + seconds;
+        seconds++;
+    }
+    else if(seconds < 100){
+        document.getElementById("time").innerHTML = "0" + seconds;
+        seconds++;
+    }
+    else{
+        document.getElementById("time").innerHTML = seconds;
+        seconds++;
+    }
+}
+
+function reset(){
+    board = [];
+    seconds = 0;
+    //clears interval
+    clearInterval(myInterval);
+    initialClick = false;
+    document.getElementById("time").innerHTML = '000';
+    document.getElementById("minesweeperBoard").innerHTML = "";
+    document.getElementById("minesweeperBoard").classList.remove("expert");
+
+    document.getElementById("level").removeEventListener("change", levelChange);
+
+    //select all cells in grid
+    let cells = document.querySelectorAll(".cell");
+
+    //loops through cells and adds event listeners for mouseclick
+    cells.forEach(cell => {
+        cell.removeEventListener("click", function() {cellClick(cell)});
+    });
+
+    boardGenerator(level);
+
+    buttonEvent();
 }
