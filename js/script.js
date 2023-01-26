@@ -153,16 +153,45 @@ function buttonEvent(){
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
 
-    //loops through cells and adds event listeners for mouseclick
+    //loops through cells and adds event listeners for mouseclick 
     cells.forEach(cell => {
         cell.addEventListener("click", function() {cellClick(cell)});
+        cell.addEventListener("mouseenter", enterCell);
     });
 }
 
 function levelChange(event){
     level = event.target.value;
-    
     reset();
+}
+
+function enterCell(cell){
+    cell.target.focus();
+    cell.target.addEventListener("keyup", spaceBar);
+}
+
+function spaceBar(cell){
+    cell.preventDefault();
+    if ((cell.key == " " || cell.code == "Space" || cell.keyCode == 32)){
+        if(!cell.target.classList.contains("revealed")){
+            if(cell.target.classList.contains("flag")){
+                let flagNumber = Number(document.getElementById('flags').innerHTML);
+
+                document.getElementById('flags').innerHTML = flagNumber + 1;
+
+                cell.target.style.removeProperty("background");
+                cell.target.classList.remove("flag");
+            }
+            else{ 
+                let flagNumber = Number(document.getElementById('flags').innerHTML);
+
+                document.getElementById('flags').innerHTML = flagNumber - 1;
+
+                cell.target.style.background = "red";
+                cell.target.classList.add("flag");
+            }
+        }
+    }
 }
 
 //function executes when cell is clicked
@@ -171,7 +200,6 @@ function cellClick(cell){
         myInterval = setInterval(myTimer, 1000);
         initialClick = true;
     }
-
 
     //reveals clicked cell
     cell.style.background = "yellow";
@@ -231,6 +259,8 @@ function reset(){
 
     document.getElementById("level").removeEventListener("change", levelChange);
 
+    //I believe the event listners bellow dont need to be removed since the element themselves are removed from the html
+    //Also cant remove anonymous function event listeners
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
 
