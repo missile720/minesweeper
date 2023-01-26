@@ -20,7 +20,7 @@ function boardGenerator(level){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
             //loops through columns
             for(let j = 0; j < 9; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -28,7 +28,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -40,7 +40,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -187,7 +187,7 @@ function spaceBar(cell){
 
                 document.getElementById('flags').innerHTML = flagNumber - 1;
 
-                cell.target.style.background = "red";
+                cell.target.style.background = "pink";
                 cell.target.classList.add("flag");
             }
         }
@@ -205,6 +205,11 @@ function cellClick(cell){
     cell.style.background = "yellow";
     cell.classList.add("revealed");
     cell.firstChild.classList.remove("hidden");
+    
+    if(cell.firstChild.getAttribute('value') === '9'){
+        gameOver();
+    }
+
 
     if(cell.firstChild.innerHTML === ""){
         let currentCol = cell.getAttribute('col');
@@ -272,4 +277,20 @@ function reset(){
     boardGenerator(level);
 
     buttonEvent();
+}
+
+function gameOver(){
+    //stops timer
+    clearInterval(myInterval);
+
+    let cells = document.querySelectorAll(".cell");
+
+    //reveals all bombs
+    cells.forEach(cell => {
+        if(cell.firstChild.getAttribute('value') === '9'){
+            cell.style.background = "red";
+            cell.classList.add("revealed");
+            cell.firstChild.classList.remove("hidden");
+        }
+    })
 }
