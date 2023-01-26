@@ -17,7 +17,7 @@ function boardGenerator(level){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
             //loops through columns
             for(let j = 0; j < 9; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class = "hidden">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden">${board[i][j]}</span></button>`;
             }
         }
     }
@@ -118,12 +118,11 @@ function numberGenerator(template){
         for(let j = 0; j < template[i].length; j++){
             if(template[i][j] === ""){
                 let countNearBombs = 0;
-
                 //loops through the immediate surrounding cells
                 for(let x = i - 1; x <= i + 1; x++){
                     for(let y = j - 1; y <= j + 1; y++){
                         //checks for all surrounding cells except itself as well as check for grid out of bounds
-                        if(!(x === i && y === i) && x >= 0 && y >= 0 && x < template.length && y < template[0].length){
+                        if(!(x === i && y === j) && x >= 0 && y >= 0 && x < template.length && y < template[0].length){
                             //checks for bomb
                             if(template[x][y] === 9){
                                 countNearBombs++;
@@ -152,3 +151,35 @@ function buttonEvent(){
     });
 }
 
+//function executes when cell is clicked
+function cellClick(cell){
+    //reveals clicked cell
+    cell.style.background = "yellow";
+    cell.classList.add("revealed");
+    cell.firstChild.classList.remove("hidden");
+
+    if(cell.firstChild.innerHTML === ""){
+        let currentCol = cell.getAttribute('col');
+        let currentRow = cell.getAttribute('row');
+
+        let cells = document.querySelectorAll(".cell");
+
+        cells.forEach(element => {
+            let testCol = element.getAttribute('col');
+            let testRow = element.getAttribute('row');
+
+            //check to see if element is surrounding current cell
+            if(Math.abs(testRow - currentRow) <= 1){
+                if(Math.abs(testCol - currentCol) <= 1){
+                    //exclude the cell itself
+                    if(!(testRow === currentRow && testCol === currentCol)){
+                        //makes sure its not already revealed
+                        if(element.firstChild.classList.contains("hidden")){
+                            cellClick(element);
+                        }
+                    }
+                }
+            }
+        });
+    }
+}

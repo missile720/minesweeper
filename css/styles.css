@@ -61,10 +61,15 @@ button{
     height: 100%;
     width: 100%;
     background-color: rgb(38, 199, 169);
+    cursor: pointer;
 }
 
 button:hover{
     background-color: rgb(38, 86, 199);
+}
+
+.revealed{
+    cursor:default;
 }
 
 .hidden{
