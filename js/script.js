@@ -22,7 +22,7 @@ function boardGenerator(level){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
             //loops through columns
             for(let j = 0; j < 9; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
             }
         }
     }
@@ -30,7 +30,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
             }
         }
     }
@@ -42,7 +42,7 @@ function boardGenerator(level){
         for(let i = 0; i < 16; i++){
             document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
             for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j]}</span></button>`;
+                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
             }
         }
     }
@@ -77,7 +77,6 @@ function bombGenerator(level){
                 bombs--;
             }
         }
-        console.log(template)
     }
     else if(level === 'medium'){
         //initial number of bombs
@@ -329,6 +328,11 @@ function gameOver(){
             cell.firstChild.classList.remove("hidden");
         }
     });
+
+    let imgs = document.querySelectorAll(".bomb");
+    imgs.forEach(img => {
+        img.src = "/img/explosion.png";
+    })
 
     document.getElementById("bottom").classList.remove("hidden");
 }
