@@ -1,5 +1,7 @@
 let board = [];
 let level = "easy";
+let count = 0;
+let cellTotal = 0;
 let seconds = 0;
 let myInterval;
 let initialClick = false;
@@ -58,6 +60,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(9).fill("").map(() => new Array(9).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -65,11 +70,14 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(9));
             let col = Math.floor(Math.random()*(9));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
+        console.log(template)
     }
     else if(level === 'medium'){
         //initial number of bombs
@@ -78,6 +86,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(16).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -85,10 +96,12 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(16));
             let col = Math.floor(Math.random()*(16));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
     }
     else if(level === 'expert'){
@@ -98,6 +111,9 @@ function bombGenerator(level){
         document.getElementById('flags').innerHTML=bombs;
         //create template board
         template = new Array(16).fill("").map(() => new Array(30).fill(""));
+
+        //total number of cells
+        cellTotal = template.length * template[0].length - bombs;
         
         //runs while bombs still need to be placed
         while(bombs){
@@ -105,13 +121,15 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(16));
             let col = Math.floor(Math.random()*(30));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
     }
-    
+
     //runs function that generates the nearby number of bombs
     template = numberGenerator(template);
     
@@ -150,6 +168,7 @@ function numberGenerator(template){
 function buttonEvent(){
     document.getElementById("level").addEventListener("change", levelChange);
     document.getElementById("bottom").addEventListener("click", reset);
+    document.getElementById("bottomWin").addEventListener("click", reset);
 
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
@@ -183,7 +202,7 @@ function spaceBar(cell){
                 cell.target.style.removeProperty("background");
                 cell.target.classList.remove("flag");
             }
-            else{ 
+            else if(Number(document.getElementById('flags').innerHTML)){ 
                 let flagNumber = Number(document.getElementById('flags').innerHTML);
 
                 document.getElementById('flags').innerHTML = flagNumber - 1;
@@ -206,12 +225,14 @@ function cellClick(cell){
     cell.style.background = "yellow";
     cell.classList.add("revealed");
     cell.firstChild.classList.remove("hidden");
-    
-    if(cell.firstChild.getAttribute('value') === '9'){
-        gameOver();
+
+    if(cell.classList.contains("flag")){
+        let flagNumber = document.getElementById('flags').innerHTML;
+        document.getElementById('flags').innerHTML = Number(flagNumber) + 1;
+        cell.classList.remove("flag");
     }
-
-
+    
+    
     if(cell.firstChild.innerHTML === ""){
         let currentCol = cell.getAttribute('col');
         let currentRow = cell.getAttribute('row');
@@ -235,6 +256,13 @@ function cellClick(cell){
                 }
             }
         });
+    }
+
+    if(cell.firstChild.getAttribute('value') === '9'){
+        gameOver();
+    }
+    else{
+        winCondition();
     }
 }
 
@@ -263,6 +291,7 @@ function reset(){
     document.getElementById("minesweeperBoard").innerHTML = "";
     document.getElementById("minesweeperBoard").classList.remove("expert");
     document.getElementById("bottom").classList.add("hidden");
+    document.getElementById("bottomWin").classList.add("hidden");
 
     document.getElementById("level").removeEventListener("change", levelChange);
 
@@ -302,4 +331,34 @@ function gameOver(){
     });
 
     document.getElementById("bottom").classList.remove("hidden");
+}
+
+function winCondition(){
+    let cells = document.querySelectorAll(".cell");
+    count = 0;
+
+    cells.forEach(cell => {
+        if(cell.classList.contains("revealed")){
+            count++
+        }
+    });
+
+    if(count === cellTotal){
+        winScreen();
+    }
+}
+
+function winScreen(){
+    //stops timer
+    clearInterval(myInterval);
+    document.getElementById("bottomWin").classList.remove("hidden");
+
+    let cells = document.querySelectorAll(".cell");
+    
+    //reveals all bombs
+    cells.forEach(cell => {
+            cell.style.background = "yellow";
+            cell.classList.add("revealed");
+            cell.firstChild.classList.remove("hidden");
+    });
 }
