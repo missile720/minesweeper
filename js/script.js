@@ -70,11 +70,14 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(9));
             let col = Math.floor(Math.random()*(9));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
+        console.log(template)
     }
     else if(level === 'medium'){
         //initial number of bombs
@@ -93,10 +96,12 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(16));
             let col = Math.floor(Math.random()*(16));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
     }
     else if(level === 'expert'){
@@ -116,10 +121,12 @@ function bombGenerator(level){
             let row = Math.floor(Math.random()*(16));
             let col = Math.floor(Math.random()*(30));
             
-            //sets bomb
-            template[row][col] = 9;
+            //sets bomb if bomb not already set
+            if(template[row][col] !== 9){
+                template[row][col] = 9;
 
-            bombs--;
+                bombs--;
+            }
         }
     }
 
@@ -161,6 +168,7 @@ function numberGenerator(template){
 function buttonEvent(){
     document.getElementById("level").addEventListener("change", levelChange);
     document.getElementById("bottom").addEventListener("click", reset);
+    document.getElementById("bottomWin").addEventListener("click", reset);
 
     //select all cells in grid
     let cells = document.querySelectorAll(".cell");
@@ -194,7 +202,7 @@ function spaceBar(cell){
                 cell.target.style.removeProperty("background");
                 cell.target.classList.remove("flag");
             }
-            else{ 
+            else if(Number(document.getElementById('flags').innerHTML)){ 
                 let flagNumber = Number(document.getElementById('flags').innerHTML);
 
                 document.getElementById('flags').innerHTML = flagNumber - 1;
@@ -217,6 +225,13 @@ function cellClick(cell){
     cell.style.background = "yellow";
     cell.classList.add("revealed");
     cell.firstChild.classList.remove("hidden");
+
+    if(cell.classList.contains("flag")){
+        let flagNumber = document.getElementById('flags').innerHTML;
+        document.getElementById('flags').innerHTML = Number(flagNumber) + 1;
+        cell.classList.remove("flag");
+    }
+    
     
     if(cell.firstChild.innerHTML === ""){
         let currentCol = cell.getAttribute('col');
@@ -276,6 +291,7 @@ function reset(){
     document.getElementById("minesweeperBoard").innerHTML = "";
     document.getElementById("minesweeperBoard").classList.remove("expert");
     document.getElementById("bottom").classList.add("hidden");
+    document.getElementById("bottomWin").classList.add("hidden");
 
     document.getElementById("level").removeEventListener("change", levelChange);
 
@@ -333,5 +349,16 @@ function winCondition(){
 }
 
 function winScreen(){
+    //stops timer
+    clearInterval(myInterval);
+    document.getElementById("bottomWin").classList.remove("hidden");
+
+    let cells = document.querySelectorAll(".cell");
     
+    //reveals all bombs
+    cells.forEach(cell => {
+            cell.style.background = "yellow";
+            cell.classList.add("revealed");
+            cell.firstChild.classList.remove("hidden");
+    });
 }
