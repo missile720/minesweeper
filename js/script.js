@@ -6,6 +6,24 @@ let seconds = 0;
 let myInterval;
 let initialClick = false;
 
+let levelObject = {
+    "easy" : {
+        "row" : 9,
+        "column" : 9,
+        "bombs" : 10
+    },
+    "medium" : {
+        "row" : 16,
+        "column" : 16,
+        "bombs" : 40
+    },
+    "expert" : {
+        "row" : 16,
+        "column" : 30,
+        "bombs" : 99
+    }
+}
+
 //calls function boardGenerator based on level
 boardGenerator(level);
 
@@ -15,36 +33,19 @@ buttonEvent();
 function boardGenerator(level){
     board = bombGenerator(level);
     
-    //checks level for size of board
-    if(level === 'easy'){
         //loops through rows
-        for(let i = 0; i < 9; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
+        for(let i = 0; i < levelObject[level].row; i++){
+            document.getElementById("minesweeperBoard").innerHTML += `<div class="row ${level}" id="row${i}"></div>`;
             //loops through columns
-            for(let j = 0; j < 9; j++){
+            for(let j = 0; j < levelObject[level].column; j++){
                 document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
             }
         }
-    }
-    else if(level === 'medium'){
-        for(let i = 0; i < 16; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
-            for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
-            }
-        }
-    }
-    //size might be too big for mobile devices need to test when done
-    else if(level === 'expert'){
-        //changes CSS for the width of the board
-        document.getElementById("minesweeperBoard").classList.add("expert")
 
-        for(let i = 0; i < 16; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
-            for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
-            }
-        }
+    //size might be too big for mobile devices need to test when done
+    if(level === 'expert'){
+        //changes CSS for the width of the board
+        document.getElementById("minesweeperBoard").classList.add("experts")
     }
 }
 
@@ -53,79 +54,27 @@ function bombGenerator(level){
     let bombs = 0;
     let template = [];
 
-    if(level === 'easy'){
-        //initial number of bombs
-        bombs = 10;
-        //adds flags based on number of initial bombs
-        document.getElementById('flags').innerHTML=bombs;
-        //create template board
-        template = new Array(9).fill("").map(() => new Array(9).fill(""));
+    //initial number of bombs
+    bombs = levelObject[level].bombs;
+    //adds flags based on number of initial bombs
+    document.getElementById('flags').innerHTML=bombs;
+    //create template board
+    template = new Array(levelObject[level].row).fill("").map(() => new Array(levelObject[level].column).fill(""));
 
-        //total number of cells
-        cellTotal = template.length * template[0].length - bombs;
+    //total number of cells
+    cellTotal = template.length * template[0].length - bombs;
+    
+    //runs while bombs still need to be placed
+    while(bombs){
+        //randomizes the row and col for the bomb
+        let row = Math.floor(Math.random()*(levelObject[level].row));
+        let col = Math.floor(Math.random()*(levelObject[level].column));
         
-        //runs while bombs still need to be placed
-        while(bombs){
-            //randomizes the row and col for the bomb
-            let row = Math.floor(Math.random()*(9));
-            let col = Math.floor(Math.random()*(9));
-            
-            //sets bomb if bomb not already set
-            if(template[row][col] !== 9){
-                template[row][col] = 9;
+        //sets bomb if bomb not already set
+        if(template[row][col] !== 9){
+            template[row][col] = 9;
 
-                bombs--;
-            }
-        }
-    }
-    else if(level === 'medium'){
-        //initial number of bombs
-        bombs = 40;
-        //adds flags based on number of initial bombs
-        document.getElementById('flags').innerHTML=bombs;
-        //create template board
-        template = new Array(16).fill("").map(() => new Array(16).fill(""));
-
-        //total number of cells
-        cellTotal = template.length * template[0].length - bombs;
-        
-        //runs while bombs still need to be placed
-        while(bombs){
-            //randomizes the row and col for the bomb
-            let row = Math.floor(Math.random()*(16));
-            let col = Math.floor(Math.random()*(16));
-            
-            //sets bomb if bomb not already set
-            if(template[row][col] !== 9){
-                template[row][col] = 9;
-
-                bombs--;
-            }
-        }
-    }
-    else if(level === 'expert'){
-        //initial number of bombs
-        bombs = 99;
-        //adds flags based on number of initial bombs
-        document.getElementById('flags').innerHTML=bombs;
-        //create template board
-        template = new Array(16).fill("").map(() => new Array(30).fill(""));
-
-        //total number of cells
-        cellTotal = template.length * template[0].length - bombs;
-        
-        //runs while bombs still need to be placed
-        while(bombs){
-            //randomizes the row and col for the bomb
-            let row = Math.floor(Math.random()*(16));
-            let col = Math.floor(Math.random()*(30));
-            
-            //sets bomb if bomb not already set
-            if(template[row][col] !== 9){
-                template[row][col] = 9;
-
-                bombs--;
-            }
+            bombs--;
         }
     }
 
@@ -288,7 +237,7 @@ function reset(){
     initialClick = false;
     document.getElementById("time").innerHTML = '000';
     document.getElementById("minesweeperBoard").innerHTML = "";
-    document.getElementById("minesweeperBoard").classList.remove("expert");
+    document.getElementById("minesweeperBoard").classList.remove("experts");
     document.getElementById("bottom").classList.add("hidden");
     document.getElementById("bottomWin").classList.add("hidden");
 
