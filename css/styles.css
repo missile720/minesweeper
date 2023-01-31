@@ -55,7 +55,7 @@ select{
     height: 500px;
 }
 
-.expert{
+.experts{
     width: 800px;
 }
 
@@ -65,7 +65,7 @@ select{
         height: 300px;
     }
 
-    .expert{
+    .experts{
         width: 375px;
     }
     .info{

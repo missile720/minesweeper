@@ -6,6 +6,24 @@ let seconds = 0;
 let myInterval;
 let initialClick = false;
 
+let levelObject = {
+    "easy" : {
+        "row" : 9,
+        "column" : 9,
+        "bombs" : 10
+    },
+    "medium" : {
+        "row" : 16,
+        "column" : 16,
+        "bombs" : 40
+    },
+    "expert" : {
+        "row" : 16,
+        "column" : 30,
+        "bombs" : 99
+    }
+}
+
 //calls function boardGenerator based on level
 boardGenerator(level);
 
@@ -15,36 +33,19 @@ buttonEvent();
 function boardGenerator(level){
     board = bombGenerator(level);
     
-    //checks level for size of board
-    if(level === 'easy'){
         //loops through rows
-        for(let i = 0; i < 9; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row easy" id="row${i}"></div>`;
+        for(let i = 0; i < levelObject[level].row; i++){
+            document.getElementById("minesweeperBoard").innerHTML += `<div class="row ${level}" id="row${i}"></div>`;
             //loops through columns
-            for(let j = 0; j < 9; j++){
+            for(let j = 0; j < levelObject[level].column; j++){
                 document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
             }
         }
-    }
-    else if(level === 'medium'){
-        for(let i = 0; i < 16; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
-            for(let j = 0; j < 16; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
-            }
-        }
-    }
-    //size might be too big for mobile devices need to test when done
-    else if(level === 'expert'){
-        //changes CSS for the width of the board
-        document.getElementById("minesweeperBoard").classList.add("expert")
 
-        for(let i = 0; i < 16; i++){
-            document.getElementById("minesweeperBoard").innerHTML += `<div class="row medium" id="row${i}"></div>`;
-            for(let j = 0; j < 30; j++){
-                document.getElementById(`row${i}`).innerHTML += `<button class="cell" row = "${i}" col = "${j}"><span class="hidden" value = "${board[i][j]}">${board[i][j] === 9 ? `<img class = "bomb" src="/img/bomb.png" alt="bomb"/>` : board[i][j]}</span></button>`;
-            }
-        }
+    //size might be too big for mobile devices need to test when done
+    if(level === 'expert'){
+        //changes CSS for the width of the board
+        document.getElementById("minesweeperBoard").classList.add("experts")
     }
 }
 
