@@ -83,7 +83,7 @@ select{
     height: 11.11%;
 }
 
-.medium{
+.medium, .expert{
     height: 6.25%;
 }
 
